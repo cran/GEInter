@@ -1,11 +1,11 @@
 #' Plot coefficients from a "bic.BLMCP" object
 #'
-#' Draw a heat map for estimated coefficients in a fitted
+#' Draw a heatmap for estimated coefficients in a fitted
 #' \code{"bic.BLMCP"} object.
 #'
 #' @param x Fitted \code{"bic.BLMCP"} model.
 #' @param \dots Other graphical parameters to plot.
-#' @return A heat map for estimated coefficients.
+#' @return A heatmap for estimated coefficients.
 #' @seealso \code{predict}, \code{coef} and \code{BLMCP} methods.
 #' @references Mengyun Wu, Yangguang Zang, Sanguo Zhang, Jian Huang, and Shuangge Ma.
 #' \emph{Accommodating missingness in environmental measurements in gene-environment interaction
@@ -27,10 +27,15 @@ plot.bic.BLMCP=function(x,...){
   beta=t(matrix(object$beta_estimate,q+1,p))
   index_G=which(beta[,1]!=0)
   x=rbind(alpha,beta[index_G,])
-  cnames=paste("E",1:(length(alpha)-1),sep="")
+
+  #####change
+  temp=rownames(object$alpha_estimate)
+  cnames=temp
   cnames=c("G",cnames)
   colnames(x)=cnames
-  cnames=paste("G",index_G,sep="")
+
+  temp=colnames(object$beta_estimate)[index_G]
+  cnames=temp
   cnames=c("E",cnames)
   rownames(x)=cnames
   # rc <- rainbow(nrow(x), start = 0, end = .3)
@@ -49,9 +54,17 @@ plot.bic.BLMCP=function(x,...){
   value=data_m$value
   da<-factor(data_m$ID)
   tttt=sapply(levels(da),function(x) substr(x,2,nchar(x)))
-  levels_order=levels(da)[order(as.numeric(tttt))]
+  cnames=paste("E",1:q,sep="")
+  if(sum(colnames(x)==c("G",cnames))==(q+1)){
+    levels_order=levels(da)[order(as.numeric(tttt))]
+    temp1=temp=rev(levels_order)
+  }else{
+    temp1=temp=levels(da)
+    temp[1]="G"
+    temp[-1]=setdiff(levels(da),temp[1])
+    temp1=temp
+  }
 
-  temp1=temp=rev(levels_order)
   if(length(temp)==1){
     temp1=temp
   }else{

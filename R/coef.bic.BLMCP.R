@@ -8,7 +8,7 @@
 #'
 #' @return The object returned depends on the \dots{} argument which is passed on to the \code{coef}
 #' method for \code{bic.BLMCP} objects.
-#' \item{alpha}{Matrix of the coefficients for main environmental effects.}
+#' \item{alpha}{The matrix of the coefficients for main environmental effects.}
 #' \item{beta}{The matrix of the regression coefficients for all main genetic effects (the first row)
 #' and interactions.}
 #' @seealso \code{bic.BLMCP}, and \code{predict}, and \code{plot} methods, and the
@@ -20,17 +20,13 @@
 #' \emph{Identification of gene-environment interactions in cancer studies using penalization.
 #' Genomics, 102(4):189-194, 2013.}
 #' @export
-#' @export  coef.bic.BLMCP
+#' @export coef.bic.BLMCP
 coef.bic.BLMCP<-function(object, ...){
   q=length(object$alpha_estimate)
   p=length(object$beta_estimate)/(q+1)
-  alpha=matrix(object$alpha_estimate,q,1)
-  beta=(matrix(object$beta_estimate,q+1,p))
-  cnames1=paste("E",1:q,sep="")
-  rownames(alpha)=cnames1
-  cnames=paste("G",1:p,sep="")
-  rownames(beta)=c("-",cnames1)
-  colnames(beta)=cnames
- return(list(alpha=alpha,beta=beta))
+  alpha=object$alpha_estimate
+  beta=object$beta_estimate
+
+  return(list(alpha=alpha,beta=beta))
 
 }

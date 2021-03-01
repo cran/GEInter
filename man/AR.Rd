@@ -2,18 +2,18 @@
 % Please edit documentation in R/AR.R
 \name{AR}
 \alias{AR}
-\title{The covariance matrix with autoregressive (AR) structure among variables}
+\title{The covariance matrix with an autoregressive (AR) structure among variables}
 \usage{
 AR(rho, p)
 }
 \arguments{
 \item{rho}{The correlation coefficient indicating the AR relationship between the variables.}
 
-\item{p}{Dimension of variables.}
+\item{p}{The dimension of variables.}
 }
 \value{
 A covariance matrix.
 }
 \description{
-The covariance matrix with AR structure among variables, where the marginal variances are 1 and the \code{j}th and \code{k}th variables have correlation coefficient \code{rho^abs(j-k)}.
+The covariance matrix with an AR structure among variables, where the marginal variances are 1 and the \code{j}th and \code{k}th variables have correlation coefficient \code{rho^abs(j-k)}.
 }

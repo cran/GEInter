@@ -1,8 +1,8 @@
 #' Plot coefficients from a "RobSBoosting" object
 #'
-#' Draw a plot for estimated parameters in a fitted
-#' \code{"RobSBoosting"} object, where a heat map is displaced for selected discrete
-#' environmental (E) effects, genetic (G) effects and their interactions, and a plot for
+#' Draw plots for estimated parameters in a fitted
+#' \code{"RobSBoosting"} object, including a heatmap for discrete
+#' environmental (E) effects, and selected genetic (G) effects and G-E interactions, and plots for
 #' each of selected continuous E (EC) effect and interactions between EC and G.
 #'
 #' @param x Fitted \code{"RobSBoosting"} model.
@@ -30,11 +30,19 @@ variable_pair=fit$variable_pair
 iin=which(is.element(fit$v_type[1:q],c("ED")))
 nolinear_c=setdiff(c(1:q),iin)
 
-cnames=paste("G",1:p,sep="")
-colnames(loc)=c("G",cnames)
-cnames=paste("E",1:q,sep="")
-rownames(loc)=c("E",cnames)
+estimation_results=fit$estimation_results
+
+
+#####change
+cnames=names(estimation_results)
+temp=seq((q+1),length(cnames),by=(q+1))
+names_G=cnames[temp]
+names_E=cnames[1:q]
+colnames(loc)=c("G",names_G)
+rownames(loc)=c("E",names_E)
+
 linear_id_G=as.matrix(loc[1,-1],ncol=1)
+
 
 
 linear_id1=loc[(iin+1),]
@@ -43,44 +51,40 @@ linear_id2=matrix(loc[(iin+1),],(length(iin)*(p+1)),1)
 
 linear_id=rbind(linear_id_G,linear_id2)
 
-estimation_results=coef.RobSBoosting(fit)$estimation_results
+
 
 
 
 
 temp=matrix(0,(p+1),(length(iin)+1))
-colnames(temp)=c("E",paste("E",iin,sep=""))
+iinE=names_E[iin]
+colnames(temp)=c("E",iinE)
 rownames(temp)=colnames(loc)
 ttt=lapply(estimation_results, function(x) ifelse(length(x)==0,0,x))
 temp[1,]=c(0,unlist(ttt[iin]))
 tempp=estimation_results[linear_id_G]
-names(tempp)= paste("G",1:p,sep="")
+names(tempp)=names_G
 hi=sapply(tempp,length)
 te=which(hi!=0)
 
-temp[2:(length(te)+1),1]=unlist(tempp[te])
-# gg=apply(linear_id1, 1, names)
+
+if(length(te)>1)
+  temp[(te+1),1]=unlist(tempp[te])#########################change
 mm=estimation_results[linear_id2]
-pp=sapply(mm,function(x) ifelse(length(x)==0,0,x))
-temp[1:(p+1),-1]=pp
+pp=as.numeric(sapply(mm,function(x) ifelse(length(x)==0,0,x)))#####change
+t22=matrix(pp,nrow=(p+1),byrow = TRUE)
+
+temp[1:(p+1),-1]=t22
 x=temp
 xx=as.matrix(x[rowSums(x)!=0,])
+if(rowSums(x)[1]==0){ xx=rbind(x[1,],xx); rownames(xx)[1]="E"}
+
 x1=xx
-rownames(x1)[1]="E"
+if(dim(x1)[1]>0)
+  rownames(x1)[1]="E"
 colnames(x1)=colnames(temp)
 colnames(x1)[1]="G"
-# cnames=paste("E",1:(length(alpha)-1),sep="")
-# cnames=c("G",cnames)
-# colnames(x)=cnames
-# cnames=paste("G",index_G,sep="")
-# cnames=c("E",cnames)
-# rownames(x)=cnames
-# rc <- rainbow(nrow(x1), start = 0, end = .3)
-# cc <- rainbow(ncol(x1), start = 0, end = .3)
-# hv <- stats::heatmap(x1, col = cm.colors(256), scale = "column",
-#   RowSideColors = rc, ColSideColors = cc, margins = c(5,10),
-#   xlab = "Environment variables", ylab =  "Selected Genetic factors",
-#   main = "heatmap for the estimated parameters")
+
 
 tt=as.matrix(x1[,dim(x1)[2]:1])
 colnames(tt)=rev(colnames(x1))
@@ -93,9 +97,20 @@ ID=data_m$ID
 value=data_m$value
 da<-factor(data_m$ID)
 tttt=sapply(levels(da),function(x) substr(x,2,nchar(x)))
-levels_order=levels(da)[order(as.numeric(tttt))]
 
-temp1=temp=rev(levels_order)
+
+cnames=paste("E",1:q,sep="")
+if(sum(rownames(loc)==c("E",cnames))==(q+1)){
+  levels_order=levels(da)[order(as.numeric(tttt))]
+  temp1=temp=rev(levels_order)
+}else{
+  temp1=temp=levels(da)
+  temp[1]="G"
+  temp[-1]=setdiff(levels(da),temp[1])
+  temp1=temp
+}
+
+
 if(length(temp)==1){
   temp1=temp
 }else{
@@ -118,7 +133,7 @@ figure <- ggplot2::ggplot(data_m, ggplot2::aes(x=variable,y=ID)) +
 
 nolinear_c=setdiff(c(1:q),iin)
 
-cnames=paste("G",1:p,sep="")
+cnames=names_G
 
 
 nonlinear_id1=loc[(nolinear_c+1),]

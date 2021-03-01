@@ -31,7 +31,7 @@ predict.bic.PTReg <- function(object,newE,newG, ...){
   beta_estimate=temp$beta
   p=dim(beta_estimate)[2]
   q=dim(beta_estimate)[1]-1
-  alpha_estimate=temp$alpha
+  alpha_estimate=matrix(temp$alpha,q,1)
   intercept_estimate=temp$intercept
   b_estimate=matrix(beta_estimate,p*(q+1),1)
   n=dim(newE)[1]

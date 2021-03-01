@@ -45,6 +45,6 @@ predict.bic.BLMCP<-function(object,newE,newG,...){
   for (i in 1:n){  temp3=matrix(newE[i,],q,1)%*%newG[i,]
   W[i,setdiff(seq(from=1,to=p*(q+1),by=1),seq(from=1,to=p*(q+1),by=q+1))]=matrix(temp3,p*q,1)}
 
-  y.predict=newE%*%matrix(bb,q,1)+W%*%b
+  y.predict=newE%*%matrix(aa,q,1)+W%*%b
 
 }

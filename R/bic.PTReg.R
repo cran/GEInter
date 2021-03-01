@@ -24,7 +24,7 @@
 #' @param family Response type of \code{Y} (see above).
 #' @return An object with S3 class \code{"bic.PTReg"} is returned, which is a list with the ingredients of the BIC fit.
 #' \item{call}{The call that produced this object.}
-#' \item{alpha}{Matrix of the coefficients for main E effects, each column corresponds to one
+#' \item{alpha}{The matrix of the coefficients for main E effects, each column corresponds to one
 #' combination of (lambda1,lambda2).}
 #' \item{beta}{The coefficients for main G effects and G-E interactions, each column corresponds to
 #' one combination of (lambda1,lambda2). For each column, the first element is the first G effect and
@@ -144,42 +144,58 @@ bic.PTReg<-function(G,E,Y,lambda1_set,lambda2_set,gamma1,gamma2,max_init,h=NULL,
 
 
 
-    for (l1 in 1:length(lambda1_set)){
-      #print(paste0('l1-',l1))
-      for (l2 in 1:length(lambda2_set)){
-        #print(paste0('l2-',l2))
-        lambda1=lambda1_set[l1]
-        lambda2=lambda2_set[l2]
+  for (l1 in 1:length(lambda1_set)){
+    #print(paste0('l1-',l1))
+    for (l2 in 1:length(lambda2_set)){
+      #print(paste0('l2-',l2))
+      lambda1=lambda1_set[l1]
+      lambda2=lambda2_set[l2]
 
 
-        fit_temp=MCP_Hier(G[select_sample,],E[select_sample,],y[select_sample],W[select_sample,,],WW[select_sample,],lambda1=lambda1,lambda2=lambda2,gamma1=gamma1,gamma2=gamma2,weight=weight[select_sample])
+      fit_temp=MCP_Hier(G[select_sample,],E[select_sample,],y[select_sample],W[select_sample,,],WW[select_sample,],lambda1=lambda1,lambda2=lambda2,gamma1=gamma1,gamma2=gamma2,weight=weight[select_sample])
 
 
-        BIC[t]=log(fit_temp$RSS)+fit_temp$df*log(nn)/nn
+      BIC[t]=log(fit_temp$RSS)+fit_temp$df*log(nn)/nn
 
-        fit[[t]]=fit_temp
+      fit[[t]]=fit_temp
 
-        alpha_f[,t]=fit_temp$alpha;
-        beta_f[,t]=matrix(fit_temp$beta,pp,1)
-        intercept_f[,t]=fit_temp$intercept
-        lambda_combine[(l1-1)*length(lambda1_set)+l2,1]=lambda1;
-        lambda_combine[(l1-1)*length(lambda1_set)+l2,2]=lambda2;
-        df[t]=fit_temp$df
+      alpha_f[,t]=fit_temp$alpha;
+      beta_f[,t]=matrix(fit_temp$beta,pp,1)
+      intercept_f[,t]=fit_temp$intercept
+      lambda_combine[(l1-1)*length(lambda2_set)+l2,1]=lambda1;
+      lambda_combine[(l1-1)*length(lambda2_set)+l2,2]=lambda2;
+      df[t]=fit_temp$df
 
-        t=t+1
-      }
+      t=t+1
     }
+  }
 
 
   id=which.min(BIC)
   beta_estimate=fit[[id]]$beta
-  alpha_estimate=fit[[id]]$alpha
+  alpha_estimate=matrix(fit[[id]]$alpha,q,1)
   intercept_estimate=fit[[id]]$intercept
 
 
+  ##change
+  if(!(is.null(colnames(G)))){
+    colnames(beta_estimate)=colnames(G)
+  }else{
+    cnames=paste("G",1:p,sep="")
+    colnames(beta_estimate)=cnames
+  }
 
-  #b_estimate=matrix(beta_estimate,p*(q+1),1)
-#fit_LTS=fit_LTS,
+  if(!(is.null(colnames(E)))){
+    rownames(alpha_estimate)=colnames(E)
+    cnames=c("G",colnames(E))
+    rownames(beta_estimate)=cnames
+  }else{
+    cnames=paste("E",1:q,sep="")
+    rownames(alpha_estimate)=cnames
+    cnames=c("G",cnames)
+    rownames(beta_estimate)=cnames
+  }
+  #########
   result=list(call=thisCall,alpha=alpha_f,beta=beta_f,intercept=intercept_f,df=df,BIC=BIC,family=family,intercept_estimate=intercept_estimate,alpha_estimate=alpha_estimate,beta_estimate=beta_estimate,lambda_combine=lambda_combine)
   class(result) = "bic.PTReg"
   return(result)

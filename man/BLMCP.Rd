@@ -24,8 +24,7 @@ observation vector.}
 \item{E}{Input matrix of \code{q} environmental risk factors. Each row is an observation
 vector.}
 
-\item{Y}{Response variable. A quantitative vector for \code{family="continuous"}. For
-\code{family="survival"}, \code{Y} should be a two-column matrix with the first column being
+\item{Y}{Response variable. A quantitative vector for continuous response. For survival response, \code{Y} should be a two-column matrix with the first column being
 the log(survival time) and the second column being the censoring indicator. The indicator is a
 binary variable, with "1" indicating dead, and "0" indicating right censored.}
 
@@ -45,7 +44,7 @@ corresponding interactions are regarded as a group.}
 \value{
 An object with S3 class \code{"BLMCP"} is returned, which is a list with the following components.
 \item{call}{The call that produced this object.}
-\item{alpha}{Matrix of the coefficients for main E effects.}
+\item{alpha}{The matrix of the coefficients for main E effects.}
 \item{beta}{The matrix of the regression coefficients for all main G effects (the first row)
 and interactions.}
 \item{df}{The number of nonzeros.}

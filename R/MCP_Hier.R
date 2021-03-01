@@ -92,7 +92,10 @@ MCP_Hier<-function(G,E,y,W=NULL,WW=NULL,lambda1,lambda2,gamma1,gamma2,weight=NUL
     }
     zero_id=which(zero_id!=1)
     alpha0=matrix(0,q,1)
-    alpha0[zero_id]=solve(t(E[,zero_id])%*%E[,zero_id])%*%t(E[,zero_id])%*%y
+    tempnn=t(E[,zero_id])%*%E[,zero_id]
+    ddtemp=dim(tempnn)[1]
+    tempnn=tempnn+diag(1e-5,ddtemp,ddtemp)
+    alpha0[zero_id]=solve(tempnn)%*%t(E[,zero_id])%*%y
     r=y-E%*%alpha0
   } else {
     zero_id=matrix(0,q+1,1)
@@ -102,7 +105,10 @@ MCP_Hier<-function(G,E,y,W=NULL,WW=NULL,lambda1,lambda2,gamma1,gamma2,weight=NUL
     zero_id=which(zero_id!=1)
     alpha_c0=matrix(0,q+1,1)
     if (rcond(t(E_temp[,zero_id])%*%E_temp[,zero_id])>1e-16){
-      alpha_c0[zero_id]=solve(t(E_temp[,zero_id])%*%E_temp[,zero_id])%*%t(E_temp[,zero_id])%*%y
+      temppp=t(E_temp[,zero_id])%*%E_temp[,zero_id]
+      dddim=dim(temppp)[1]
+      temppp=temppp+diag(1e-5,dddim,dddim)
+      alpha_c0[zero_id]=solve(temppp)%*%t(E_temp[,zero_id])%*%y
     }
     alpha0=alpha_c0[2:(q+1)]
     intercept0=alpha_c0[1]
@@ -222,7 +228,12 @@ MCP_Hier<-function(G,E,y,W=NULL,WW=NULL,lambda1,lambda2,gamma1,gamma2,weight=NUL
       }
       zero_id=which(zero_id!=1)
       alpha1=matrix(0,q,1)
-      alpha1[zero_id]=solve(t(E[,zero_id])%*%E[,zero_id])%*%t(E[,zero_id])%*%temp
+
+      tempnn=t(E[,zero_id])%*%E[,zero_id]
+      ddtemp=dim(tempnn)[1]
+      tempnn=tempnn+diag(1e-5,ddtemp,ddtemp)
+
+      alpha1[zero_id]=solve(tempnn)%*%t(E[,zero_id])%*%temp
       r=r-E%*%(alpha1-alpha0)
       alpha0=alpha1
     } else {
@@ -235,7 +246,11 @@ MCP_Hier<-function(G,E,y,W=NULL,WW=NULL,lambda1,lambda2,gamma1,gamma2,weight=NUL
       zero_id=which(zero_id!=1)
       alpha_c1=matrix(0,q+1,1)
       if (rcond(t(E_temp[,zero_id])%*%E_temp[,zero_id])>1e-16){
-        alpha_c1[zero_id]=solve(t(E_temp[,zero_id])%*%E_temp[,zero_id])%*%t(E_temp[,zero_id])%*%temp
+        tempnn=t(E_temp[,zero_id])%*%E_temp[,zero_id]
+        ddtemp=dim(tempnn)[1]
+        tempnn=tempnn+diag(1e-5,ddtemp,ddtemp)
+
+        alpha_c1[zero_id]=solve(tempnn)%*%t(E_temp[,zero_id])%*%temp
       } else{
         alpha_c1=alpha_c0
       }
@@ -302,7 +317,12 @@ MCP_Hier<-function(G,E,y,W=NULL,WW=NULL,lambda1,lambda2,gamma1,gamma2,weight=NUL
     }
     zero_id=which(zero_id!=1)
     alpha0=matrix(0,q,1)
-    alpha0[zero_id]=solve(t(E[,zero_id])%*%E[,zero_id])%*%t(E[,zero_id])%*%rr
+
+    tempnn=t(E[,zero_id])%*%E[,zero_id]
+    ddtemp=dim(tempnn)[1]
+    tempnn=tempnn+diag(1e-5,ddtemp,ddtemp)
+
+    alpha0[zero_id]=solve(tempnn)%*%t(E[,zero_id])%*%rr
   } else {
     zero_id=matrix(0,q+1,1)
     for (k in 1:q){
@@ -311,7 +331,12 @@ MCP_Hier<-function(G,E,y,W=NULL,WW=NULL,lambda1,lambda2,gamma1,gamma2,weight=NUL
     zero_id=which(zero_id!=1)
     alpha_c1=matrix(0,q+1,1)
     if (rcond(t(E_temp[,zero_id])%*%E_temp[,zero_id])>1e-16){
-      alpha_c1[zero_id]=solve(t(E_temp[,zero_id])%*%E_temp[,zero_id])%*%t(E_temp[,zero_id])%*%rr
+
+      tempnn=t(E_temp[,zero_id])%*%E_temp[,zero_id]
+      ddtemp=dim(tempnn)[1]
+      tempnn=tempnn+diag(1e-5,ddtemp,ddtemp)
+
+      alpha_c1[zero_id]=solve(tempnn)%*%t(E_temp[,zero_id])%*%rr
     }
     alpha0=alpha_c1[2:(q+1)]
     intercept0=alpha_c1[1]

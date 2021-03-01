@@ -1,11 +1,11 @@
 #' Plot coefficients from a "BLMCP" object
 #'
-#' Draw a heat map for estimated coefficients in a fitted
+#' Draw a heatmap for estimated coefficients in a fitted
 #' \code{"BLMCP"} object.
 #'
 #' @param x Fitted \code{"BLMCP"} model.
 #' @param \dots Other graphical parameters to plot.
-#' @return A heat map for estimated coefficients.
+#' @return A heatmap for estimated coefficients.
 #' @seealso \code{BLMCP}, and  \code{predict} and \code{coef}
 #' methods.
 #'
@@ -29,10 +29,14 @@ plot.BLMCP=function(x,...){
   beta=t(matrix(object$beta,q+1,p))
   index_G=which(beta[,1]!=0)
   x=rbind(alpha,beta[index_G,])
-  cnames=paste("E",1:(length(alpha)-1),sep="")
+  #####change
+  temp=rownames(object$alpha)
+  cnames=temp
   cnames=c("G",cnames)
   colnames(x)=cnames
-  cnames=paste("G",index_G,sep="")
+
+  temp=colnames(object$beta)[index_G]
+  cnames=temp
   cnames=c("E",cnames)
   rownames(x)=cnames
   # rc <- rainbow(nrow(x), start = 0, end = .3)
@@ -51,9 +55,18 @@ plot.BLMCP=function(x,...){
   value=data_m$value
   da<-factor(data_m$ID)
   tttt=sapply(levels(da),function(x) substr(x,2,nchar(x)))
-  levels_order=levels(da)[order(as.numeric(tttt))]
+  cnames=paste("E",1:q,sep="")
+  if(sum(colnames(x)==c("G",cnames))==(q+1)){
+    levels_order=levels(da)[order(as.numeric(tttt))]
+    temp1=temp=rev(levels_order)
+  }else{
+    temp1=temp=levels(da)
+    temp[1]="G"
+    temp[-1]=setdiff(levels(da),temp[1])
+    temp1=temp
+  }
 
-  temp1=temp=rev(levels_order)
+
   if(length(temp)==1){
     temp1=temp
   }else{
@@ -74,3 +87,4 @@ plot.BLMCP=function(x,...){
       mid = "green")+ggplot2::scale_x_discrete(position = "top")  + ggplot2::scale_y_discrete(limits = temp1)
   figure
 }
+

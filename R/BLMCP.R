@@ -12,8 +12,7 @@
 #' observation vector.
 #' @param E Input matrix of \code{q} environmental risk factors. Each row is an observation
 #' vector.
-#' @param Y Response variable. A quantitative vector for \code{family="continuous"}. For
-#' \code{family="survival"}, \code{Y} should be a two-column matrix with the first column being
+#' @param Y Response variable. A quantitative vector for continuous response. For survival response, \code{Y} should be a two-column matrix with the first column being
 #' the log(survival time) and the second column being the censoring indicator. The indicator is a
 #' binary variable, with "1" indicating dead, and "0" indicating right censored.
 #' @param weight Observation weights.
@@ -25,7 +24,7 @@
 #' @param max_iter Maximum number of iterations.
 #' @return An object with S3 class \code{"BLMCP"} is returned, which is a list with the following components.
 #' \item{call}{The call that produced this object.}
-#' \item{alpha}{Matrix of the coefficients for main E effects.}
+#' \item{alpha}{The matrix of the coefficients for main E effects.}
 #' \item{beta}{The matrix of the regression coefficients for all main G effects (the first row)
 #' and interactions.}
 #' \item{df}{The number of nonzeros.}
@@ -132,13 +131,23 @@ BLMCP<-function(G,E,Y,weight=NULL,lambda1,lambda2,gamma1=6,gamma2=6,max_iter=200
     }
     a=W[,id]
     b=(t(a)%*%a*(1/n))
+
+    dddd=dim(b)[1]
+    b=b+diag(1e-5,dddd,dddd)
+
     R[[j]] = chol(b);
-    W[,id]=t(solve(t(R[[j]]),t(a)))
+
+    dddd=dim(R[[j]])[1]
+    temp=t(R[[j]])+diag(1e-5,dddd,dddd)
+    W[,id]=t(solve(temp,t(a)))
   }
 
 
   beta0=matrix(0,pp,1);
-  alpha0=solve(t(X)%*%X,t(X)%*%y);
+
+  dddd=dim(X)[2]
+  temp=t(X)%*%X+diag(1e-5,dddd,dddd)
+  alpha0=solve(temp,t(X)%*%y);
   r=y-X%*%alpha0;
   aa=0
   beta1=beta0
@@ -172,7 +181,11 @@ BLMCP<-function(G,E,Y,weight=NULL,lambda1,lambda2,gamma1=6,gamma2=6,max_iter=200
       r=r-W_j%*%(beta1[id]-beta0[id]);
     }
     temp=r+X%*%alpha0;
-    alpha1=solve(t(X)%*%X,t(X)%*%temp);
+
+    dddd=dim(X)[2]
+    temp11=t(X)%*%X+diag(1e-5,dddd,dddd)
+
+    alpha1=solve(temp11,t(X)%*%temp);
     r=r-X%*%(alpha1-alpha0);
     diff=mean(abs(beta1)-abs(beta1));
 
@@ -199,8 +212,14 @@ BLMCP<-function(G,E,Y,weight=NULL,lambda1,lambda2,gamma1=6,gamma2=6,max_iter=200
     else {
       id=group_inf[j]:pp
     }
-    beta_print[id]=solve(R[[j]],beta1[id])
+
+    dddd=dim(R[[j]])[1]
+    temp=R[[j]]+diag(1e-5,dddd,dddd)
+
+
+    beta_print[id]=solve(temp,beta1[id])
   }
+
 
 
 
@@ -209,7 +228,32 @@ BLMCP<-function(G,E,Y,weight=NULL,lambda1,lambda2,gamma1=6,gamma2=6,max_iter=200
   df=sum(abs(beta_print)>0)
   BIC=log(sum(r^2))+log(n)*sum(abs(beta_print)>0)/n
   bb=matrix(beta_print,q+1,p)
-  result=list(alpha=alpha1,beta=bb,df=df,BIC=BIC,aa=aa)
+
+  alpha=matrix(alpha1,q,1)
+  beta=bb
+
+
+  ##change
+  if(!(is.null(colnames(G)))){
+    colnames(beta)=colnames(G)
+  }else{
+    cnames=paste("G",1:p,sep="")
+    colnames(beta)=cnames
+  }
+
+  if(!(is.null(colnames(E)))){
+    rownames(alpha)=colnames(E)
+    cnames=c("G",colnames(E))
+    rownames(beta)=cnames
+  }else{
+    cnames=paste("E",1:q,sep="")
+    rownames(alpha)=cnames
+    cnames=c("G",cnames)
+    rownames(beta)=cnames
+  }
+  #########
+
+  result=list(alpha=alpha,beta=beta,df=df,BIC=BIC,aa=aa)
   class(result) = "BLMCP"
   return(result)
 }

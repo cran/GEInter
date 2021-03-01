@@ -25,10 +25,9 @@ Each row is an observation vector.}
 \item{E}{Input matrix of \code{q} environmental (E) risk factors. Each row is an observation
 vector.}
 
-\item{Y}{Response variable. A quantitative vector for \code{family="continuous"}.
-For \code{family}="survival", \code{Y} should be a two-column matrix with the first column
-being the log(survival time) and the second column being the censoring indicator. The indicator
-is a binary variable, with "1" indicating dead, and "0" indicating right censored.}
+\item{Y}{Response variable. A quantitative vector for continuous response. For survival response, \code{Y} should be a two-column matrix with the first column being
+the log(survival time) and the second column being the censoring indicator. The indicator is a
+binary variable, with "1" indicating dead, and "0" indicating right censored.}
 
 \item{weight}{Observation weights.}
 
@@ -50,7 +49,7 @@ where each main G effect and its corresponding interactions are regarded as a gr
 \value{
 An object with S3 class \code{"bic.BLMCP"} is returned, which is a list with the ingredients of the BIC fit.
 \item{call}{The call that produced this object.}
-\item{alpha}{Matrix of the coefficients for main E effects, each column corresponds to one
+\item{alpha}{The matrix of the coefficients for main E effects, each column corresponds to one
 combination of (lambda1,lambda2).}
 \item{beta}{The coefficients for main G effects and G-E interactions, each column corresponds to
 one combination of (lambda1,lambda2). For each column, the first element is the first G effect and
@@ -59,7 +58,7 @@ the second to (\code{q+1}) elements are the interactions for the first G factor,
 \item{BIC}{Bayesian Information Criterion for each value of (lambda1,lambda2).}
 \item{alpha_estimate}{Final alpha estimate using Bayesian Information Criterion.}
 \item{beta_estimate}{Final beta estimate using Bayesian Information Criterion.}
-\item{lambda_combine}{Matrix of (lambda1, lambda2), with the first column being the values of
+\item{lambda_combine}{The matrix of (lambda1, lambda2), with the first column being the values of
 lambda1, the second being the values of lambda2.}
 }
 \description{

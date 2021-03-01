@@ -30,7 +30,7 @@ binary variable, with "1" indicating dead, and "0" indicating right censored.}
 \item{w}{Weight for accommodating censoring if \code{family="survival"}. Default is NULL and a
 Kaplan-Meier estimator-based weight is used.}
 
-\item{permutation_t}{Permutation times.}
+\item{permutation_t}{Number of permutation.}
 
 \item{family}{Response type of \code{Y} (see above).}
 }

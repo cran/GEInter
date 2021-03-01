@@ -54,7 +54,7 @@ the trimmed samples \code{h} is not given.}
 \value{
 An object with S3 class \code{"bic.PTReg"} is returned, which is a list with the ingredients of the BIC fit.
 \item{call}{The call that produced this object.}
-\item{alpha}{Matrix of the coefficients for main E effects, each column corresponds to one
+\item{alpha}{The matrix of the coefficients for main E effects, each column corresponds to one
 combination of (lambda1,lambda2).}
 \item{beta}{The coefficients for main G effects and G-E interactions, each column corresponds to
 one combination of (lambda1,lambda2). For each column, the first element is the first G effect and

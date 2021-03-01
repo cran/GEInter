@@ -48,8 +48,12 @@
 #' \item{degree}{Degree for the B spline basis.}
 #' \item{v}{The step size used in the sparse boosting process.}
 #' \item{NorM}{The values of B spline basis.}
+#' \item{estimation_results}{A list of estimation results for each variable. Here, the first
+#' \code{q} elemnets are for the E effects, the (\code{q+1}) element
+#' is for the first G effect and the (\code{q+2}) to (\code{2q+1}) elements are for the interactions
+#' corresponding to the first G factor, and so on.}
 #'
-#' @seealso  \code{coef}, \code{predict}, and \code{plot} methods, and \code{Miss.boosting}
+#' @seealso  \code{bs} method for B spline expansion, \code{coef}, \code{predict}, and \code{plot} methods, and \code{Miss.boosting}
 #' method.
 #' @references Mengyun Wu and Shuangge Ma.
 #' \emph{Robust semiparametric gene-environment interaction analysis using sparse boosting.
@@ -90,14 +94,29 @@
 
 RobSBoosting<-function(G,E,Y,loop_time,num.knots=NULL,Boundary.knots=NULL,degree=1,v=0.1,family=c("continuous","survival"),knots=NULL,E_type){
   if(is.null(knots)){
-    if((is.null(Boundary.knots))|(is.null(num.knots))|(is.null(degree)))
-    stop("You need to supply 'Boundary.knots', 'degree' and 'num.knots' since you do not input 'knots")
+    if((is.null(num.knots))|(is.null(degree)))
+    stop("You need to supply 'degree' and 'num.knots' since you do not input 'knots")
   }
 
   # get call and family, E_type, Method
   thisCall = match.call()
   family = match.arg(family)
   Method = "Robust"
+
+  if(!(is.null(colnames(G)))){
+    names_G=colnames(G)
+  }else{
+    names_G=paste("G",1:p,sep="")
+  }
+
+  if(!(is.null(colnames(E)))){
+    names_E=colnames(E)
+  }else{
+    names_E=paste("E",1:q,sep="")
+  }
+
+
+
   y=Y
   n<-dim(E)[1]
   q<-dim(E)[2]
@@ -346,7 +365,152 @@ RobSBoosting<-function(G,E,Y,loop_time,num.knots=NULL,Boundary.knots=NULL,degree
 
   id=which.min(BIC)
 
-  output=list(call=thisCall,max_t=t,spline_result=result,BIC=BIC,variable=variable,id=id,variable_pair=variable_pair,v_type=v_type,family=family,degree=degree,v=v,NorM=NorM)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   variable_pair1=variable_pair
+
+
+  ##########2_6_change
+
+
+  variable_pair=unique(variable_pair1[variable[1: id],],MARGIN=1)
+  if (!is.matrix(variable_pair)){
+    variable_pair=matrix(variable_pair,1,2)
+  }
+
+  alpha0=matrix(0,q,1)
+  G_main=matrix(0,p,1)
+  GE_interaction=matrix(0,q,p)
+  temp=variable_pair[which(variable_pair[,2]==0),1]
+  alpha0[temp]=1
+  temp=variable_pair[which(variable_pair[,1]==0),2]
+  G_main[temp]=1
+
+  temp=variable_pair[((variable_pair[,1]!=0) & (variable_pair[,2]!=0)),]
+
+  GE_interaction[temp]=1
+
+  beta0=matrix(0,p+p*q,1)
+
+  for (j in 1:p) {
+    beta0[(j-1)*(q+1)+1]=G_main[j]
+    beta0[((j-1)*(q+1)+2):(j*(q+1))]=GE_interaction[,j]
+  }
+
+
+
+
+  unique_temp=unique(variable[1:id])
+  unique_variable= variable_pair1[unique_temp,]
+  unique_coef=vector('list',length(unique_temp))
+  unique_knots=vector('list',length(unique_temp))
+  unique_Boundary.knots=vector('list',length(unique_temp))
+  for (i in 1:length(unique_temp)){
+    unique_coef[[i]]=0
+  }
+
+
+
+  a=0
+  spline_result=result
+  for (i in 1: id){
+    id_temp=which(unique_temp== variable[i])
+    unique_coef[[id_temp]]=unique_coef[[id_temp]]+spline_result[[i]]$estimates[-1]*v
+    a=a+ spline_result[[i]]$estimates[1]*v
+    if ((!is.null(spline_result[[i]]$knots))){
+      unique_knots[[id_temp]]= spline_result[[i]]$knots
+      unique_Boundary.knots[[id_temp]]=spline_result[[i]]$Boundary.knots
+    }
+  }
+
+
+
+  unique_vtype=v_type[unique_temp]
+
+
+
+  unique_set=list(intercept=a,unique_variable=unique_variable,unique_coef=unique_coef,unique_knots=unique_knots,unique_Boundary.knots=unique_Boundary.knots,unique_vtype=unique_vtype)
+  id1=length(unique_set$unique_coef)
+
+  if (id1==1){
+    unique_variable=matrix(unique_variable,1,2)
+  }
+
+
+  xx_dot=seq(from=0,to=1,by=0.0001)
+
+  estimation_results=vector('list',p+q+p*q) ## E+G+E*G
+
+
+
+
+  id_temp1=which(unique_set$unique_vtype=='EC')
+  id_temp2=unique_set$unique_variable[id_temp1,1]+unique_set$unique_variable[id_temp1,2]*(q+1)
+  if(length(id_temp1>0)){
+    for (i in 1:length(id_temp1)){
+
+      xx=splines::bs(xx_dot, knots=unique_set$unique_knots[[id_temp1[i]]], intercept=TRUE, degree=degree,Boundary.knots = unique_set$unique_Boundary.knots[[id_temp1[i]]])
+      xx=xx[,-1]
+      xx=xx-(matrix(1,length(xx_dot),1)%*% NorM)
+      bs_predict=xx%*%unique_set$unique_coef[[id_temp1[i]]]
+
+
+      estimation_results[[id_temp2[i]]]=bs_predict
+    }
+
+    id_temp1=which(unique_set$unique_vtype=='G-EC')
+    id_temp2=unique_set$unique_variable[id_temp1,1]+unique_set$unique_variable[id_temp1,2]*(q+1)
+    id_temp3=unique_set$unique_variable[id_temp1,2]
+
+    for (i in 1:length(id_temp1)){
+
+      xx=splines::bs(xx_dot, knots=unique_set$unique_knots[[id_temp1[i]]], intercept=TRUE, degree=degree,Boundary.knots = unique_set$unique_Boundary.knots[[id_temp1[i]]])
+      xx=xx[,-1]
+      xx=xx-(matrix(1,length(xx_dot),1)%*%NorM)
+      bs_predict=xx%*%unique_set$unique_coef[[id_temp1[i]]]
+
+
+
+      estimation_results[[id_temp2[i]]]=bs_predict
+    }
+  }
+
+
+
+  id_temp1=which(((unique_set$unique_vtype=='ED') | (unique_set$unique_vtype=='G') | (unique_set$unique_vtype=='G-ED'))!=0)
+  id_temp2=unique_set$unique_variable[id_temp1,1]+unique_set$unique_variable[id_temp1,2]*(q+1)
+
+
+  for (i in 1:length(id_temp1)){
+    estimation_results[[id_temp2[i]]]=unique_set$unique_coef[[id_temp1[i]]]
+  }
+
+
+cnames=names_E
+for(i in 1:p){
+  temp1=rep(NA,q)
+  for(jj in 1:q)  temp1[jj]=paste(names_G[i],'-',names_E[jj])
+  temp=c(names_G[i],temp1)
+  cnames=c(cnames,temp)
+}
+names(estimation_results)=cnames
+
+
+
+  output=list(call=thisCall,max_t=t,spline_result=result,BIC=BIC,variable=variable,id=id,variable_pair=variable_pair1,v_type=v_type,family=family,degree=degree,v=v,NorM=NorM,estimation_results=estimation_results)
   class(output) ="RobSBoosting"
   return(output)
 }

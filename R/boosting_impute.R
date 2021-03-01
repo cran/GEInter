@@ -21,9 +21,9 @@ boosting_impute<-function(E,im_time,E_type,loop_time,num.knots=NULL,Boundary.kno
 
   miss_id=which(colSums(is.na(E_cc))!=0)
   if(length(miss_id)>1){
-  if(max(miss_id)>length(miss_id)){
+    if(max(miss_id)>length(miss_id)){
       stop("You need to put the missing E factors in the first few columns!")
-  }
+    }
   }
 
   p1=1
@@ -160,15 +160,18 @@ boosting_impute<-function(E,im_time,E_type,loop_time,num.knots=NULL,Boundary.kno
 
 
         idd=1:nn_m
-        temp=matrix(0,1,nn_m)
-        while (length(idd)>0){
-          noise_random=emprand(err,length(idd))
-          temp[idd]=im_mean[idd]+noise_random
-          idd=which((temp>1) | (temp<0))
-        }
-        im_value=temp
+        # temp=matrix(0,1,nn_m)
+        # nniter=0
+        # while ((length(idd)>0)&(nniter<200)){
+        #   nniter=nniter+1
+        #   noise_random=emprand(err,length(idd))
+        #   temp[idd]=im_mean[idd]+noise_random
+        #   idd=which((temp>1) | (temp<0))
+        # }
+        # im_value=temp
 
-
+        noise_random=emprand(err,nn_m)
+        im_value=im_mean+noise_random
 
         if (E_type[ii]=='ED'){
           # im_value[im_value>=0.5]=1

@@ -15,7 +15,7 @@
 The object returned depends on the \dots{} argument which is passed on to the \code{coef}
 method for \code{PTReg} objects.
 \item{intercept}{The intercept estimate.}
-\item{alpha}{Matrix of the coefficients for main environmental effects.}
+\item{alpha}{The matrix of the coefficients for main environmental effects.}
 \item{beta}{The matrix of the regression coefficients for all main genetic effects (the first row) and interactions.}
 }
 \description{

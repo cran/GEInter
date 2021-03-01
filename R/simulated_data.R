@@ -13,9 +13,9 @@
 #' being the log(survival time) and the second column being the censoring indicator is
 #' generated.The indicator is a binary variable, with "1" indicating dead, and "0" indicating
 #' right censored.
-#' @param a1 If \code{family}="survival", we generate the survival time from a uniform
+#' @param a1 If \code{family}="survival", we generate the censoring time from a uniform
 #' distribution where \code{a1} is the left endpoint.
-#' @param a2 If \code{family}="survival", we generate the survival time from a uniform
+#' @param a2 If \code{family}="survival", we generate the censoring time from a uniform
 #' distribution where \code{a2} is the right endpoint.
 #' @return Response variable. A quantitative vector for \code{family="continuous"}. For
 #' \code{family="survival"}, it would be a two-column matrix with the first column being the

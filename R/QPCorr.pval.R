@@ -12,7 +12,7 @@
 #' @param tau Quantile.
 #' @param w Weight for accommodating censoring if \code{family="survival"}. Default is NULL and a
 #' Kaplan-Meier estimator-based weight is used.
-#' @param permutation_t Permutation times.
+#' @param permutation_t Number of permutation.
 #' @param family Response type of \code{Y} (see above).
 #'
 #' @return Matrix of p-value, with the element in the \code{i}th row and the \code{j} column
@@ -141,6 +141,9 @@ QPCorr.pval<-function(G,E,Y,tau,w=NULL,permutation_t=1000,family=c("continuous",
   temp=p_freq/permutation_t
 
   pvalf[keepp4==1]=temp[keepp4==1]
+  pvalf=t(pvalf)
 
-  return(pvalf=t(pvalf))
+  if(!(is.null(colnames(G)))) colnames(pvalf)=colnames(G)
+  if(!(is.null(colnames(E)))) rownames(pvalf)=colnames(E)
+  return(pvalf=pvalf)
 }

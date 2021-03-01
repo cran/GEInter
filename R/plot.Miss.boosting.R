@@ -1,14 +1,14 @@
 #' Plot coefficients from a "Miss.boosting" object
 #'
-#' Draw a plot for estimated parameters in a fitted
-#' \code{"Miss.boosting"} object, where a heat map is displaced for selected discrete
-#' environmental (E) effects, genetic (G) effects and their interactions, and a plot for each
+#' Draw plots for estimated parameters in a fitted
+#' \code{"Miss.boosting"} object, including a heatmap for discrete
+#' environmental (E) effects, and selected genetic (G) effects and G-E interactions, and plots for each
 #' of selected continuous E (EC) effect and interactions between EC and G.
 #'
 #' @param x Fitted \code{"Miss.boosting"} model.
 #'
 #' @param \dots Other graphical parameters to plot.
-#' @return A heat map for estimated coefficients.
+#' @return A heatmap for estimated coefficients.
 #' @seealso \code{Miss.boosting}, and \code{predict} methods.
 #' @references Mengyun Wu and Shuangge Ma.
 #' \emph{Robust semiparametric gene-environment interaction analysis using sparse boosting.
@@ -30,10 +30,17 @@ plot.Miss.boosting=function(x,...){
   iin=which(is.element(E_type[1:q],c("ED")))
   nolinear_c=setdiff(c(1:q),iin)
 
-  cnames=paste("G",1:p,sep="")
-  colnames(loc)=c("G",cnames)
-  cnames=paste("E",1:q,sep="")
-  rownames(loc)=c("E",cnames)
+
+  #####change
+  cnames=rownames(fit$beta0)
+  temp=seq(1,length(fit$beta0),by=(q+1))
+  names_G=cnames[temp]
+
+  cnames=rownames(fit$alpha0)
+  names_E=cnames
+  colnames(loc)=c("G",names_G)
+  rownames(loc)=c("E",names_E)
+
   linear_id_G=as.matrix(loc[1,-1],ncol=1)
 
 
@@ -115,39 +122,34 @@ plot.Miss.boosting=function(x,...){
   if(length(iin)==0) {
   colnames(temp)= "G"
   }else{
-    colnames(temp)=c("G",paste("E",iin,sep=""))
+    iinE=names_E[iin]
+    colnames(temp)=c("G",iinE)
   }
   rownames(temp)=c("E",colnames(loc)[-1])
   ttt=lapply(estimation_results, function(x) ifelse(length(x)==0,0,x))
   temp[1,]=c(0,unlist(ttt[iin]))
   tempp=estimation_results[linear_id_G]
-  names(tempp)= paste("G",1:p,sep="")
+  names(tempp)= names_G
   hi=sapply(tempp,length)
   te=which(hi!=0)
+
+
+
   if(length(te)>1)
-  temp[2:(length(te)+1),1]=unlist(tempp[te])
-  # gg=apply(linear_id1, 1, names)
+    temp[(te+1),1]=unlist(tempp[te])#########################change
   mm=estimation_results[linear_id2]
-  pp=as.numeric(sapply(mm,function(x) ifelse(length(x)==0,0,x)))
-  temp[1:(p+1),-1]=pp
+  pp=as.numeric(sapply(mm,function(x) ifelse(length(x)==0,0,x)))#####change
+  t22=matrix(pp,nrow=(p+1),byrow = TRUE)
+
+  temp[1:(p+1),-1]=t22
   x=temp
   xx=as.matrix(x[rowSums(x)!=0,])
+  if(rowSums(x)[1]==0){ xx=rbind(x[1,],xx); rownames(xx)[1]="E"}
   x1=xx
   if(dim(x1)[1]>0)
-  rownames(x1)[1]="E"
+    rownames(x1)[1]="E"
   colnames(x1)=colnames(temp)
-  # cnames=paste("E",1:(length(alpha)-1),sep="")
-  # cnames=c("G",cnames)
-  # colnames(x)=cnames
-  # cnames=paste("G",index_G,sep="")
-  # cnames=c("E",cnames)
-  # rownames(x)=cnames
-  # rc <- rainbow(nrow(x1), start = 0, end = .3)
-  # cc <- rainbow(ncol(x1), start = 0, end = .3)
-  # hv <- stats::heatmap(x1, col = cm.colors(256), scale = "column",
-  #   RowSideColors = rc, ColSideColors = cc, margins = c(5,10),
-  #   xlab = "Environment variables", ylab =  "Selected Genetic factors",
-  #   main = "heatmap for the estimated parameters")
+  colnames(x1)[1]="G"
 
   tt=as.matrix(x1[,dim(x1)[2]:1])
   colnames(tt)=rev(colnames(x1))
@@ -161,9 +163,18 @@ plot.Miss.boosting=function(x,...){
   value=data_m$value
   da<-factor(data_m$ID)
   tttt=sapply(levels(da),function(x) substr(x,2,nchar(x)))
-  levels_order=levels(da)[order(as.numeric(tttt))]
 
-  temp1=temp=rev(levels_order)
+  cnames=paste("E",1:q,sep="")
+  if(sum(rownames(loc)==c("E",cnames))==(q+1)){
+    levels_order=levels(da)[order(as.numeric(tttt))]
+    temp1=temp=rev(levels_order)
+  }else{
+    temp1=temp=levels(da)
+    temp[1]="G"
+    temp[-1]=setdiff(levels(da),temp[1])
+    temp1=temp
+  }
+
   if(length(temp)==1){
     temp1=temp
     }else{

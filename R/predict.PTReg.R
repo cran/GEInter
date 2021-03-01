@@ -31,17 +31,17 @@ predict.PTReg <- function(object,newE,newG, ...){
   beta_estimate=temp$beta
   p=dim(beta_estimate)[2]
   q=dim(beta_estimate)[1]-1
-  alpha_estimate=temp$alpha
+  alpha_estimate=matrix(temp$alpha,q,1)
   intercept_estimate=temp$intercept
   b_estimate=matrix(beta_estimate,p*(q+1),1)
-   n=dim(newE)[1]
-   W=matrix(0,n,p*(q+1))
+  n=dim(newE)[1]
+  W=matrix(0,n,p*(q+1))
   W[,seq(from=1,to=p*(q+1),by=(q+1))]=newG
-   for (i in 1:n){
-   temp3=matrix(newE[i,],q,1)%*%newG[i,]
-   ggg=setdiff(seq(from=1,to=p*(q+1),by=1),seq(from=1,to=p*(q+1),by=q+1))
-   W[i,ggg]=matrix(temp3,(p*q),1)
-   }
+  for (i in 1:n){
+    temp3=matrix(newE[i,],q,1)%*%newG[i,]
+    ggg=setdiff(seq(from=1,to=p*(q+1),by=1),seq(from=1,to=p*(q+1),by=q+1))
+    W[i,ggg]=matrix(temp3,(p*q),1)
+  }
 
   y_predict=newE%*%alpha_estimate+W%*%b_estimate+intercept_estimate
   return(y_predict)

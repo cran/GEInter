@@ -12,8 +12,8 @@ data(Rob_data)
 }
 \description{
 A matrix containing the simulated genetic (G) effects (the first 20 columns), environmental (E)
-effects (column 21 to column 24), and continuous response (column 25), logarithm of survival time
-(column 26) and censoring indicators (column 27).
+effects (column 21 to column 24), continuous response (column 25), logarithm of survival time
+(column 26), and censoring indicator (column 27).
 }
 \examples{
 data(Rob_data)

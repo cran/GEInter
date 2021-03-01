@@ -25,9 +25,10 @@
 #' \item{unique_vtype}{A vector representing the variable type of \code{unique_variable}. Here, "EC"
 #' stands for continuous E effect, "ED" for discrete E effect, "G" for G effect, "EC-G" for the
 #' interaction between "EC" and "G", and "ED-G" for the interaction between "ED" and "G".}
-#' \item{estimation_results}{A list of estimation results for each variable. Here, the first element
-#' is for the first G effect and the second to (\code{q+1}) elements are for the interactions
-#' corresponding to the first G factor, and so on (see \code{unique_coef}).}
+#' \item{estimation_results}{A list of estimation results for each variable. Here, the first
+#' \code{q} elemnets are for the E effects, the (\code{q+1}) element
+#' is for the first G effect and the (\code{q+2}) to (\code{2q+1}) elements are for the interactions
+#' corresponding to the first G factor, and so on.}
 #' @seealso \code{RobSBoosting}, and \code{predict}, and \code{plot} methods.
 #' @references Mengyun Wu and Shuangge Ma.
 #' \emph{Robust semiparametric gene-environment interaction analysis using sparse boosting.
@@ -94,65 +95,74 @@ coef.RobSBoosting<-function(object,...){
 
 
   unique_vtype=object$v_type[unique_temp]
+  #
+  #
+  #
+  # unique_set=list(intercept=a,unique_variable=unique_variable,unique_coef=unique_coef,unique_knots=unique_knots,unique_Boundary.knots=unique_Boundary.knots,unique_vtype=unique_vtype)
+  id=length(unique_coef)
+
+  if (id==1){
+    unique_variable=matrix(unique_variable,1,2)
+  }
+  #
+  #
+  # xx_dot=seq(from=0,to=1,by=0.0001)
+  #
+  # estimation_results=vector('list',p+q+p*q) ## E+G+E*G
+  #
+  #
+  #
+  #
+  # id_temp1=which(unique_set$unique_vtype=='EC')
+  # id_temp2=unique_set$unique_variable[id_temp1,1]+unique_set$unique_variable[id_temp1,2]*(q+1)
+  # if(length(id_temp1>0)){
+  # for (i in 1:length(id_temp1)){
+  #
+  #   xx=splines::bs(xx_dot, knots=unique_set$unique_knots[[id_temp1[i]]], intercept=TRUE, degree=object$degree,Boundary.knots = unique_set$unique_Boundary.knots[[id_temp1[i]]])
+  #   xx=xx[,-1]
+  #   xx=xx-(matrix(1,length(xx_dot),1)%*%object$NorM)
+  #   bs_predict=xx%*%unique_set$unique_coef[[id_temp1[i]]]
+  #
+  #
+  #   estimation_results[[id_temp2[i]]]=bs_predict
+  # }
+  #
+  # id_temp1=which(unique_set$unique_vtype=='G-EC')
+  # id_temp2=unique_set$unique_variable[id_temp1,1]+unique_set$unique_variable[id_temp1,2]*(q+1)
+  # id_temp3=unique_set$unique_variable[id_temp1,2]
+  #
+  # for (i in 1:length(id_temp1)){
+  #
+  #   xx=splines::bs(xx_dot, knots=unique_set$unique_knots[[id_temp1[i]]], intercept=TRUE, degree=object$degree,Boundary.knots = unique_set$unique_Boundary.knots[[id_temp1[i]]])
+  #   xx=xx[,-1]
+  #   xx=xx-(matrix(1,length(xx_dot),1)%*%object$NorM)
+  #   bs_predict=xx%*%unique_set$unique_coef[[id_temp1[i]]]
+  #
+  #
+  #
+  #   estimation_results[[id_temp2[i]]]=bs_predict
+  # }
+  # }
+  #
+  #
+  #
+  # id_temp1=which(((unique_set$unique_vtype=='ED') | (unique_set$unique_vtype=='G') | (unique_set$unique_vtype=='G-ED'))!=0)
+  # id_temp2=unique_set$unique_variable[id_temp1,1]+unique_set$unique_variable[id_temp1,2]*(q+1)
+  #
+  #
+  # for (i in 1:length(id_temp1)){
+  #   estimation_results[[id_temp2[i]]]=unique_set$unique_coef[[id_temp1[i]]]
+  # }
+  #
+  # intercept=unique_set$intercept
 
 
-
-  unique_set=list(intercept=a,unique_variable=unique_variable,unique_coef=unique_coef,unique_knots=unique_knots,unique_Boundary.knots=unique_Boundary.knots,unique_vtype=unique_vtype)
-  id=length(unique_set$unique_coef)
+  id=length(unique_coef)
 
   if (id==1){
     unique_variable=matrix(unique_variable,1,2)
   }
 
-
-  xx_dot=seq(from=0,to=1,by=0.0001)
-
-  estimation_results=vector('list',p+q+p*q) ## E+G+E*G
-
-
-
-
-  id_temp1=which(unique_set$unique_vtype=='EC')
-  id_temp2=unique_set$unique_variable[id_temp1,1]+unique_set$unique_variable[id_temp1,2]*(q+1)
-  if(length(id_temp1>0)){
-  for (i in 1:length(id_temp1)){
-
-    xx=splines::bs(xx_dot, knots=unique_set$unique_knots[[id_temp1[i]]], intercept=TRUE, degree=object$degree,Boundary.knots = unique_set$unique_Boundary.knots[[id_temp1[i]]])
-    xx=xx[,-1]
-    xx=xx-(matrix(1,length(xx_dot),1)%*%object$NorM)
-    bs_predict=xx%*%unique_set$unique_coef[[id_temp1[i]]]
-
-
-    estimation_results[[id_temp2[i]]]=bs_predict
-  }
-
-  id_temp1=which(unique_set$unique_vtype=='G-EC')
-  id_temp2=unique_set$unique_variable[id_temp1,1]+unique_set$unique_variable[id_temp1,2]*(q+1)
-  id_temp3=unique_set$unique_variable[id_temp1,2]
-
-  for (i in 1:length(id_temp1)){
-
-    xx=splines::bs(xx_dot, knots=unique_set$unique_knots[[id_temp1[i]]], intercept=TRUE, degree=object$degree,Boundary.knots = unique_set$unique_Boundary.knots[[id_temp1[i]]])
-    xx=xx[,-1]
-    xx=xx-(matrix(1,length(xx_dot),1)%*%object$NorM)
-    bs_predict=xx%*%unique_set$unique_coef[[id_temp1[i]]]
-
-
-
-    estimation_results[[id_temp2[i]]]=bs_predict
-  }
-  }
-
-
-
-  id_temp1=which(((unique_set$unique_vtype=='ED') | (unique_set$unique_vtype=='G') | (unique_set$unique_vtype=='G-ED'))!=0)
-  id_temp2=unique_set$unique_variable[id_temp1,1]+unique_set$unique_variable[id_temp1,2]*(q+1)
-
-
-  for (i in 1:length(id_temp1)){
-    estimation_results[[id_temp2[i]]]=unique_set$unique_coef[[id_temp1[i]]]
-  }
-
-  intercept=unique_set$intercept
-  return(list(intercept=intercept,unique_variable=unique_variable,unique_coef=unique_coef,unique_knots=unique_knots,unique_Boundary.knots=unique_Boundary.knots,unique_vtype=unique_vtype,estimation_results=estimation_results))
+  estimation_results=object$estimation_results
+  return(list(intercept=a,unique_variable=unique_variable,unique_coef=unique_coef,unique_knots=unique_knots,unique_Boundary.knots=unique_Boundary.knots,unique_vtype=unique_vtype,estimation_results=estimation_results))
 }

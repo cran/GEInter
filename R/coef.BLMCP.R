@@ -8,7 +8,7 @@
 #'
 #' @return The object returned depends on the \dots{} argument which is passed on to the \code{coef}
 #' method for \code{BLMCP} objects.
-#' \item{alpha}{Matrix of the coefficients for main environmental effects.}
+#' \item{alpha}{The matrix of the coefficients for main environmental effects.}
 #' \item{beta}{The matrix of the regression coefficients for all main genetic effects (the first row)
 #' and interactions.}
 #' @seealso \code{BLMCP}, and \code{predict}, \code{plot} methods, and
@@ -21,16 +21,11 @@
 #' @export coef.BLMCP
 
 coef.BLMCP<-function(object, ...){
-  q=length(object$alpha)
-  p=length(object$beta)/(q+1)
-  bb=matrix(object$beta,q+1,p)
-  aa=matrix(object$alpha,q,1)
+  # q=length(object$alpha)
+  # p=length(object$beta)/(q+1)
+  bb=object$beta
+  aa=object$alpha
 
-  cnames1=paste("E",1:q,sep="")
-  rownames(aa)=cnames1
-  cnames=paste("G",1:p,sep="")
-  rownames(bb)=c("-",cnames1)
-  colnames(bb)=cnames
   return(list(alpha=aa,beta=bb))
 
 }

@@ -30,9 +30,10 @@ and knots will be B spline otherwise.}
 \item{unique_vtype}{A vector representing the variable type of \code{unique_variable}. Here, "EC"
 stands for continuous E effect, "ED" for discrete E effect, "G" for G effect, "EC-G" for the
 interaction between "EC" and "G", and "ED-G" for the interaction between "ED" and "G".}
-\item{estimation_results}{A list of estimation results for each variable. Here, the first element
-is for the first G effect and the second to (\code{q+1}) elements are for the interactions
-corresponding to the first G factor, and so on (see \code{unique_coef}).}
+\item{estimation_results}{A list of estimation results for each variable. Here, the first
+\code{q} elemnets are for the E effects, the (\code{q+1}) element
+is for the first G effect and the (\code{q+2}) to (\code{2q+1}) elements are for the interactions
+corresponding to the first G factor, and so on.}
 }
 \description{
 This function extracts coefficients from a RobSBoosting model, using the stored

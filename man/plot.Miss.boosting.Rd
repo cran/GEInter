@@ -12,12 +12,12 @@
 \item{\dots}{Other graphical parameters to plot.}
 }
 \value{
-A heat map for estimated coefficients.
+A heatmap for estimated coefficients.
 }
 \description{
-Draw a plot for estimated parameters in a fitted
-\code{"Miss.boosting"} object, where a heat map is displaced for selected discrete
-environmental (E) effects, genetic (G) effects and their interactions, and a plot for each
+Draw plots for estimated parameters in a fitted
+\code{"Miss.boosting"} object, including a heatmap for discrete
+environmental (E) effects, and selected genetic (G) effects and G-E interactions, and plots for each
 of selected continuous E (EC) effect and interactions between EC and G.
 }
 \references{

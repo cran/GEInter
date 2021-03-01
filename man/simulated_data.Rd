@@ -34,10 +34,10 @@ being the log(survival time) and the second column being the censoring indicator
 generated.The indicator is a binary variable, with "1" indicating dead, and "0" indicating
 right censored.}
 
-\item{a1}{If \code{family}="survival", we generate the survival time from a uniform
+\item{a1}{If \code{family}="survival", we generate the censoring time from a uniform
 distribution where \code{a1} is the left endpoint.}
 
-\item{a2}{If \code{family}="survival", we generate the survival time from a uniform
+\item{a2}{If \code{family}="survival", we generate the censoring time from a uniform
 distribution where \code{a2} is the right endpoint.}
 }
 \value{

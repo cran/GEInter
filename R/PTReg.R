@@ -1,4 +1,4 @@
-#' Robust gene-environment interaction analysis using penalized trimmed regression.
+#' Robust gene-environment interaction analysis using penalized trimmed regression
 #'
 #' Gene-environment interaction analysis using penalized trimmed regression, which is robust to
 #' outliers in both predictor and response spaces. The objective function is based on trimming
@@ -30,7 +30,7 @@
 #' @return An object with S3 class \code{"PTReg"} is returned, which is a list with the following components.
 #' \item{call}{The call that produced this object.}
 #' \item{intercept}{The intercept estimate.}
-#' \item{alpha}{Matrix of the coefficients for main E effects.}
+#' \item{alpha}{The matrix of the coefficients for main E effects.}
 #' \item{beta}{The matrix of the regression coefficients for all main G effects (the first row)
 #' and interactions.}
 #' \item{df}{The number of nonzeros.}
@@ -222,6 +222,29 @@ PTReg<-function(G,E,Y,lambda1,lambda2,gamma1=6,gamma2=6,max_init,h=NULL,tau=0.4,
   beta=result_temp$beta
   alpha=result_temp$alpha
   intercept=result_temp$intercept
+
+
+  alpha=matrix(alpha,ncol=1)
+  ##change
+  if(!(is.null(colnames(G)))){
+    colnames(beta)=colnames(G)
+  }else{
+    cnames=paste("G",1:p,sep="")
+    colnames(beta)=cnames
+  }
+
+  if(!(is.null(colnames(E)))){
+    rownames(alpha)=colnames(E)
+    cnames=c("G",colnames(E))
+    rownames(beta)=cnames
+  }else{
+    cnames=paste("E",1:q,sep="")
+    rownames(alpha)=cnames
+    cnames=c("G",cnames)
+    rownames(beta)=cnames
+  }
+
+
   result=list(call=thisCall,intercept=intercept,alpha=alpha,beta=beta,df=df,BIC=BIC,select_sample=final_samp,family=family)
   class(result) = "PTReg"
   return(result)

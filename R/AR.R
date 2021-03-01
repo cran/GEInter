@@ -1,9 +1,9 @@
-#' The covariance matrix with autoregressive (AR) structure among variables
+#' The covariance matrix with an autoregressive (AR) structure among variables
 #'
-#' The covariance matrix with AR structure among variables, where the marginal variances are 1 and the \code{j}th and \code{k}th variables have correlation coefficient \code{rho^abs(j-k)}.
+#' The covariance matrix with an AR structure among variables, where the marginal variances are 1 and the \code{j}th and \code{k}th variables have correlation coefficient \code{rho^abs(j-k)}.
 #'
 #' @param rho The correlation coefficient indicating the AR relationship between the variables.
-#' @param p Dimension of variables.
+#' @param p The dimension of variables.
 #'
 #' @return A covariance matrix.
 #' @export AR

@@ -2,7 +2,7 @@
 % Please edit documentation in R/PTReg.R
 \name{PTReg}
 \alias{PTReg}
-\title{Robust gene-environment interaction analysis using penalized trimmed regression.}
+\title{Robust gene-environment interaction analysis using penalized trimmed regression}
 \usage{
 PTReg(
   G,
@@ -55,7 +55,7 @@ of the trimmed samples \code{h} is not given.}
 An object with S3 class \code{"PTReg"} is returned, which is a list with the following components.
 \item{call}{The call that produced this object.}
 \item{intercept}{The intercept estimate.}
-\item{alpha}{Matrix of the coefficients for main E effects.}
+\item{alpha}{The matrix of the coefficients for main E effects.}
 \item{beta}{The matrix of the regression coefficients for all main G effects (the first row)
 and interactions.}
 \item{df}{The number of nonzeros.}

@@ -73,5 +73,9 @@ QPCorr.matrix<-function(G,E,Y,tau,w=NULL,family=c("continuous","survival")){
     }
   }
   all<-t(all)
+
+  if(!(is.null(colnames(G)))) colnames(all)=colnames(G)
+  if(!(is.null(colnames(E)))) rownames(all)=colnames(E)
+
   return(all)
 }

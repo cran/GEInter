@@ -12,10 +12,10 @@
 \item{\dots}{Other graphical parameters to plot.}
 }
 \value{
-A heat map for estimated coefficients.
+A heatmap for estimated coefficients.
 }
 \description{
-Draw a heat map for estimated coefficients in a fitted
+Draw a heatmap for estimated coefficients in a fitted
 \code{"BLMCP"} object.
 }
 \references{

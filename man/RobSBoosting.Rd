@@ -71,6 +71,10 @@ for the interaction between "EC" and "G", "ED-G" for the interaction between "ED
 \item{degree}{Degree for the B spline basis.}
 \item{v}{The step size used in the sparse boosting process.}
 \item{NorM}{The values of B spline basis.}
+\item{estimation_results}{A list of estimation results for each variable. Here, the first
+\code{q} elemnets are for the E effects, the (\code{q+1}) element
+is for the first G effect and the (\code{q+2}) to (\code{2q+1}) elements are for the interactions
+corresponding to the first G factor, and so on.}
 }
 \description{
 Robust semiparametric gene-environment interaction analysis using sparse boosting. Here a
@@ -113,6 +117,6 @@ Mengyun Wu and Shuangge Ma.
 Statistics in Medicine, 38(23):4625-4641, 2019.}
 }
 \seealso{
-\code{coef}, \code{predict}, and \code{plot} methods, and \code{Miss.boosting}
+\code{bs} method for B spline expansion, \code{coef}, \code{predict}, and \code{plot} methods, and \code{Miss.boosting}
 method.
 }

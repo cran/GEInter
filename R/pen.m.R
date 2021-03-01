@@ -11,7 +11,7 @@ pen.m<- function(y,X,r,kmweight=NULL)
 
   Xtemp=X*W
   dddd=t(Xtemp[,colSums(Xtemp)!=0])%*%X[,colSums(Xtemp)!=0]
-  dde=dim(dddd)
+  dde=dim(dddd)[1]
   ctemp= solve(dddd+diag(1e-5,dde,dde))%*%(t(Xtemp[,colSums(Xtemp)!=0]))
   mbeta <-ctemp%*% y
   y_hat=X[,colSums(Xtemp)!=0]%*%mbeta

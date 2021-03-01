@@ -34,7 +34,7 @@ vector.}
 the log(survival time) and the second column being the censoring indicator. The indicator is a
 binary variable, with "1" indicating dead, and "0" indicating right censored.}
 
-\item{im_time}{The imputation times of the multiple imputation for accommodating missingness
+\item{im_time}{Number of imputation for accommodating missingness
 in E variables.}
 
 \item{loop_time}{Number of iterations of the sparse boosting.}
@@ -96,7 +96,7 @@ are missing. Here a semiparametric model is assumed to accommodate nonlinear eff
 model continuous E factors in a nonlinear way, and discrete E factors in a linear way. For
 estimating the nonlinear functions, the B spline expansion is adopted. At the second step, for
 each imputed data, we develop \code{RobSBoosting} approach for identifying important main E
-and genetic (G) effects, and G-E interactions, where the L2 loss function and Qn estimator are
+and genetic (G) effects, and G-E interactions, where the Huber loss function and Qn estimator are
 adopted to accommodate long-tailed distribution/data contamination (see \code{RobSBoosting}).
 At the third step, the identification results from Step 2 are combined based on stability
 selection technique.

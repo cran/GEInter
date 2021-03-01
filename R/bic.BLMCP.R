@@ -6,10 +6,9 @@
 #' Each row is an observation vector.
 #' @param E Input matrix of \code{q} environmental (E) risk factors. Each row is an observation
 #' vector.
-#' @param Y Response variable. A quantitative vector for \code{family="continuous"}.
-#' For \code{family}="survival", \code{Y} should be a two-column matrix with the first column
-#' being the log(survival time) and the second column being the censoring indicator. The indicator
-#' is a binary variable, with "1" indicating dead, and "0" indicating right censored.
+#' @param Y Response variable. A quantitative vector for continuous response. For survival response, \code{Y} should be a two-column matrix with the first column being
+#' the log(survival time) and the second column being the censoring indicator. The indicator is a
+#' binary variable, with "1" indicating dead, and "0" indicating right censored.
 #' @param weight Observation weights.
 #' @param lambda1_set A user supplied lambda sequence for group minimax concave penalty (MCP),
 #' where each main G effect and its corresponding interactions are regarded as a group.
@@ -21,7 +20,7 @@
 #' @param max_iter Maximum number of iterations.
 #' @return An object with S3 class \code{"bic.BLMCP"} is returned, which is a list with the ingredients of the BIC fit.
 #' \item{call}{The call that produced this object.}
-#' \item{alpha}{Matrix of the coefficients for main E effects, each column corresponds to one
+#' \item{alpha}{The matrix of the coefficients for main E effects, each column corresponds to one
 #' combination of (lambda1,lambda2).}
 #' \item{beta}{The coefficients for main G effects and G-E interactions, each column corresponds to
 #' one combination of (lambda1,lambda2). For each column, the first element is the first G effect and
@@ -30,7 +29,7 @@
 #' \item{BIC}{Bayesian Information Criterion for each value of (lambda1,lambda2).}
 #' \item{alpha_estimate}{Final alpha estimate using Bayesian Information Criterion.}
 #' \item{beta_estimate}{Final beta estimate using Bayesian Information Criterion.}
-#' \item{lambda_combine}{Matrix of (lambda1, lambda2), with the first column being the values of
+#' \item{lambda_combine}{The matrix of (lambda1, lambda2), with the first column being the values of
 #' lambda1, the second being the values of lambda2.}
 #' @seealso \code{predict}, \code{coef} and \code{plot} methods,
 #' and the \code{BLMCP} function.
@@ -83,6 +82,7 @@ bic.BLMCP<-function(G,E,Y,weight=NULL,lambda1_set=NULL,lambda2_set=NULL,nlambda1
   q=dim(E)[2]
   p=dim(G)[2]
   y=Y
+  y=as.matrix(y)
   if (dim(y)[2]==2){
     delta=y[,2]
     y=y[,1]
@@ -110,10 +110,10 @@ bic.BLMCP<-function(G,E,Y,weight=NULL,lambda1_set=NULL,lambda2_set=NULL,nlambda1
   lambda_combine=matrix(0,lambda1_n*lambda2_n,2);
   df=matrix(0,lambda1_n*lambda2_n,1);
   BIC=1e+100*matrix(1,lambda1_n*lambda2_n,1);
-for (kk1 in 1:length(lambda1_set)){
-      lambda1=lambda1_set[kk1]
-  for (kk2 in 1:length(lambda2_set)){
-    lambda2=lambda2_set[kk2]
+  for (kk1 in 1:length(lambda1_set)){
+    lambda1=lambda1_set[kk1]
+    for (kk2 in 1:length(lambda2_set)){
+      lambda2=lambda2_set[kk2]
 
       fit<-BLMCP(G,E,y,weight,lambda1,lambda2,gamma1,gamma2,max_iter)
 
@@ -128,12 +128,31 @@ for (kk1 in 1:length(lambda1_set)){
         break
       }
     }
-}
+  }
   id=which.min(BIC)
   beta_estimate=matrix(beta_f[,id],(1+q),p)
-  alpha_estimate=alpha_f[,id]
-  #b_estimate=matrix(beta_estimate,p*(q+1),1)
-  #fit_LTS=fit_LTS,
+  alpha_estimate=matrix(alpha_f[,id],q,1)
+
+  ##change
+  if(!(is.null(colnames(G)))){
+    colnames(beta_estimate)=colnames(G)
+  }else{
+    cnames=paste("G",1:p,sep="")
+    colnames(beta_estimate)=cnames
+  }
+
+  if(!(is.null(colnames(E)))){
+    rownames(alpha_estimate)=colnames(E)
+    cnames=c("G",colnames(E))
+    rownames(beta_estimate)=cnames
+  }else{
+    cnames=paste("E",1:q,sep="")
+    rownames(alpha_estimate)=cnames
+    cnames=c("G",cnames)
+    rownames(beta_estimate)=cnames
+  }
+  #########
+
 
   colnames(lambda_combine)=c("lambda1","lambda2")
   result=list(call=thisCall,alpha=alpha_f,beta=beta_f,df=df,BIC=BIC,alpha_estimate=alpha_estimate,beta_estimate=beta_estimate,lambda_combine=lambda_combine)

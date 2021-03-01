@@ -31,7 +31,7 @@
 #' Lan, Nathaniel Rothman, Tongzhang Zheng, and Shuangge Ma.
 #' \emph{Identification of gene-environment interactions in cancer studies using penalization.
 #' Genomics, 102(4):189-194, 2013.}
-#' @export Augmentated.data
+#' @export Augmented.data
 #'
 #' @examples
 #' set.seed(100)
@@ -59,7 +59,7 @@
 #' E1=E2=E;E1[miss_label1,1]=NA;E2[miss_label2,1]=NA
 #'
 #' # continuous
-#' data_new1<-Augmentated.data(G,E1,y1,h=c(0.5,1), family="continuous",
+#' data_new1<-Augmented.data(G,E1,y1,h=c(0.5,1), family="continuous",
 #' E_type=c("EC","ED","ED","EC","EC"))
 #' fit1<-BLMCP(data_new1$G_w, data_new1$E_w, data_new1$y_w, data_new1$weight,
 #' lambda1=0.025,lambda2=0.06,gamma1=3,gamma2=3,max_iter=200)
@@ -68,14 +68,14 @@
 #' plot(fit1)
 #'
 #' ## survival
-#' data_new2<-Augmentated.data(G,E2,y2, h=c(0.5,1), family="survival",
+#' data_new2<-Augmented.data(G,E2,y2, h=c(0.5,1), family="survival",
 #' E_type=c("EC","ED","ED","EC","EC"))
 #' fit2<-BLMCP(data_new2$G_w, data_new2$E_w, data_new2$y_w, data_new2$weight,
 #' lambda1=0.04,lambda2=0.05,gamma1=3,gamma2=3,max_iter=200)
 #' coef2=coef(fit2)
 #' y2_hat=predict(fit2,E[c(1,2),],G[c(1,2),])
 #' plot(fit2)
-Augmentated.data<-function(G,E,Y,h,family=c("continuous","survival"),E_type){
+Augmented.data<-function(G,E,Y,h,family=c("continuous","survival"),E_type){
   n<-dim(E)[1]
   q<-dim(E)[2]
   p<-dim(G)[2]
@@ -208,6 +208,9 @@ Augmentated.data<-function(G,E,Y,h,family=c("continuous","survival"),E_type){
   temp3 = matrix(weight_miss_c%*%matrix(1,1,nc),(n-nc)*nc,1);
   kmweight = rbind(matrix(weight_obs_c,nc,1), temp3)
   total_weight=ww_new2*kmweight
+
+  if(!(is.null(colnames(E)))) colnames(X_w)=colnames(E)
+  if(!(is.null(colnames(G)))) colnames(G_w)=colnames(G)
   result=list(E_w=X_w,G_w=G_w,y_w=y_w,weight=total_weight)
   return(result)
 
