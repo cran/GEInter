@@ -1,7 +1,7 @@
 Package: GEInter
 Type: Package
 Title: Robust Gene-Environment Interaction Analysis
-Version: 0.2.0
+Version: 0.3.0
 Authors@R: c(person("Mengyun", "Wu", role=c("aut"), email = "wu.mengyun@mail.shufe.edu.cn"),
 	     person("Xing", "Qin", role=c("aut","cre"), email = "qin.xing@163.sufe.edu.cn"),
 	     person("Shuangge", "Ma", role=c("aut"), email = "shuangge.ma@yale.edu"))
@@ -10,14 +10,14 @@ Description: For the risk, progression, and response to treatment of many comple
 License: GPL-2
 Encoding: UTF-8
 LazyData: true
-Imports: survAUC, MASS, splines, pcaPP, survival, quantreg, reshape2,
-        ggplot2, stats, graphics, Hmisc
+Imports: survAUC, MASS, splines, pcaPP, Hmisc, survival, quantreg,
+        reshape2, ggplot2, stats, graphics
 RoxygenNote: 7.1.1
-Depends: R (>= 2.10)
+Depends: R (>= 3.5.0)
 NeedsCompilation: no
-Packaged: 2021-03-01 13:22:00 UTC; qx
+Packaged: 2021-03-22 06:36:44 UTC; qx
 Author: Mengyun Wu [aut],
   Xing Qin [aut, cre],
   Shuangge Ma [aut]
 Repository: CRAN
-Date/Publication: 2021-03-01 13:40:02 UTC
+Date/Publication: 2021-03-22 07:20:03 UTC

@@ -1,6 +1,6 @@
-02899d4463f72d211c395c705dbd4c4e *DESCRIPTION
+7b79c5be7eadc408313becac9c4daa35 *DESCRIPTION
 379b17c4ba44f066a0c03e921ad45c5b *NAMESPACE
-245af8b99b174730146d33e93d3c1ac5 *NEWS.md
+a9c971912e6a51a2d242d9b320c81c78 *NEWS.md
 1e9b69258a858cbdde6063afbfb6d61f *R/AR.R
 5e7dfdb8c2d7b1e17032e66f8e7f3bde *R/Augmented.data.R
 994e1dc66bead2fe7d386192939e0c5b *R/BLMCP.R
@@ -23,7 +23,7 @@ c543e8bd9f2758da6d2fcdf7fdea36ec *R/coef.bic.BLMCP.R
 cb014c87a4099c2755ac10ed89d5f98a *R/coef.bic.PTReg.R
 14f0ee8d743121356a3c2276af5feee9 *R/combine_results.R
 5ff195b85eead5b0cb03397819766b5d *R/cqpcorr.R
-2140ad96ec54eccc120864444b3a046c *R/data.R
+8a91aa118e1b7923ae68f9cecc2e20a6 *R/data.R
 b75acc09fa007f3a0e2560e4ff6de28e *R/design.matrix.R
 32dd033143da3c6fdb37af56c1432fd8 *R/emprand.R
 3af944872d98a25793ad69eb0656b923 *R/kernel_function.R
@@ -51,16 +51,18 @@ f4061175897273e8f98196ae679c7f74 *R/reweight.R
 2b29a3204da2a1fc7c5096327dafabbb *R/simulated_data.R
 ee49ad3e53ffa69fc2643310abfe4daf *R/soft_threshold.R
 ed2faf7a24482d99ae765edc9885f4c2 *R/which.column.R
+d3bf7d8d1a4dca44347012d060d0c3d1 *data/HNSCC.rda
 cd2bc35afc395c4113cbb41fcd7801f5 *data/Rob_data.rda
 91e29491cb4d8d9cbfd26034f98c0fd2 *man/AR.Rd
 f344670253c14f02af420e586881a667 *man/Augmented.data.Rd
 53d8fa52d1e96c3a7dbbdef8c5f2a982 *man/BLMCP.Rd
+bd232895cf03c0b1c4d5f841f74228ae *man/HNSCC.Rd
 a63305a289191cbca0e9a6a792e30af4 *man/Miss.boosting.Rd
 af8658aaeb9ba45317b0ca96e902d470 *man/PTReg.Rd
 dc668d90a40b0e3dcca69d97a5fef33e *man/QPCorr.matrix.Rd
 cc139524f21574308fe4c3455bbe18e8 *man/QPCorr.pval.Rd
 845192dfa119be7782ab21ca5cb13c99 *man/RobSBoosting.Rd
-47712844020bbe895070d3ceb056e686 *man/Rob_data.Rd
+4d185bfc64b7903fa2c89d460b2b44c0 *man/Rob_data.Rd
 dc561f0e9083d641f558bccab9944ed0 *man/bic.BLMCP.Rd
 c16d430b33a5eb53481677f6dfcf6d6d *man/bic.PTReg.Rd
 8158275df02f5d194d91e88f8db8d09f *man/coef.BLMCP.Rd

@@ -5,7 +5,7 @@
 \alias{Rob_data}
 \title{A matrix containing the simulated data for \code{RobSBoosting} and \code{Miss.boosting} methods}
 \format{
-A data frame with 100 rows and 27 variables.
+A matrix with 100 rows and 27 variables.
 }
 \usage{
 data(Rob_data)

@@ -1,3 +1,7 @@
+# GEInter 0.3.0
+
+* A new data set `HNSCC` has been added as an example of practical data analysis.
+
 # GEInter 0.2.0
 
 * Function `Augmentated.data` is replaced by `Augmented.data`.
