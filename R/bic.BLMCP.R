@@ -47,7 +47,7 @@
 #' E=matrix(rnorm(150*5),150,5)
 #' E[,2]=E[,2]>0;E[,3]=E[,3]>0
 #' alpha=runif(5,2,3)
-#' beta=matrix(0,5+1,100);beta[1,1:8]=runif(8,2,3)
+#' beta=matrix(0,5+1,50);beta[1,1:8]=runif(8,2,3)
 #' beta[2:4,1]=runif(3,2,3)
 #' beta[2:3,2]=runif(2,2,3)
 #' beta[5,3]=runif(1,2,3)

@@ -1,3 +1,8 @@
+# GEInter 0.3.1
+
+* Fix the warning of "data length is different from matrix size". 
+
+
 # GEInter 0.3.0
 
 * A new data set `HNSCC` has been added as an example of practical data analysis.
