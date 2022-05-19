@@ -1,7 +1,10 @@
+# GEInter 0.3.2
+
+* Remove unnecessary package 'survAUC' in the DESCRIPTION file.
+
 # GEInter 0.3.1
 
 * Fix the warning of "data length is different from matrix size". 
-
 
 # GEInter 0.3.0
 
